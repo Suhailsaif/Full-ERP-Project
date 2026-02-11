@@ -2,43 +2,38 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class User extends Authenticatable
+class Company extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    protected $table = 'users';
+    protected $table = 'companies';
 
     protected $fillable = [
         'name',
+        'code',
         'email',
-        'password',
         'phone',
-        'is_active',
-        'last_login_at',
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
+        'status',
+        'timezone',
+        'currency',
+        'locale',
     ];
 
     protected $casts = [
-        'is_active'     => 'boolean',
-        'last_login_at' => 'datetime',
+        'status' => 'boolean',
     ];
 
     /* ==============================
      | Relationships
      |==============================*/
 
-    public function companies()
+    public function users()
     {
-        return $this->belongsToMany(Company::class, 'company_users')
+        return $this->belongsToMany(User::class, 'company_users')
             ->withPivot(['role', 'status'])
             ->withTimestamps();
     }
@@ -54,6 +49,6 @@ class User extends Authenticatable
 
     public function isActive(): bool
     {
-        return $this->is_active === true;
+        return $this->status === true;
     }
 }

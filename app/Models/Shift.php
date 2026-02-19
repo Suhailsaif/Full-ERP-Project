@@ -5,25 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class AuditLog extends BaseTenantModel
+class Shift extends BaseTenantModel
 {
     use HasFactory;
 
     protected $fillable = [
         'company_id',
-        'user_id',
-        'action',
-        'entity_type',
-        'entity_id',
-        'old_values',
-        'new_values',
-        'ip_address',
-        'user_agent',
+        'name',
+        'start_time',
+        'end_time',
+        'grace_minutes',
+        'is_flexible',
     ];
 
     protected $casts = [
-        'old_values' => 'array',
-        'new_values' => 'array',
+        'start_time'   => 'datetime:H:i',
+        'end_time'     => 'datetime:H:i',
+        'is_flexible'  => 'boolean',
     ];
 
     /* ==============================
@@ -35,8 +33,8 @@ class AuditLog extends BaseTenantModel
         return $this->belongsTo(Company::class);
     }
 
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(User::class);
     }
 }

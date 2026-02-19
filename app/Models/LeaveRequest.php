@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class LeaveRequest extends Model
+class LeaveRequest extends BaseTenantModel
 {
     use HasFactory;
 

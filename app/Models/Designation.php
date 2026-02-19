@@ -5,25 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class AuditLog extends BaseTenantModel
+class Designation extends BaseTenantModel
 {
     use HasFactory;
 
     protected $fillable = [
         'company_id',
-        'user_id',
-        'action',
-        'entity_type',
-        'entity_id',
-        'old_values',
-        'new_values',
-        'ip_address',
-        'user_agent',
-    ];
-
-    protected $casts = [
-        'old_values' => 'array',
-        'new_values' => 'array',
+        'title',
+        'level',
+        'description',
     ];
 
     /* ==============================
@@ -35,8 +25,8 @@ class AuditLog extends BaseTenantModel
         return $this->belongsTo(Company::class);
     }
 
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(User::class);
     }
 }

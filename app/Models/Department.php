@@ -6,23 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Permission extends BaseTenantModel
+class Department extends BaseTenantModel
 {
     use HasFactory, SoftDeletes;
-
-    protected $table = 'permissions';
 
     protected $fillable = [
         'company_id',
         'name',
         'code',
-        'module',
         'description',
-        'status',
-    ];
-
-    protected $casts = [
-        'status' => 'boolean',
+        'head_id',
     ];
 
     /* ==============================
@@ -34,20 +27,13 @@ class Permission extends BaseTenantModel
         return $this->belongsTo(Company::class);
     }
 
-    public function roles()
+    public function head()
     {
-        return $this->belongsToMany(
-            Role::class,
-            'role_permissions'
-        )->withTimestamps();
+        return $this->belongsTo(User::class, 'head_id');
     }
 
-    /* ==============================
-     | Helpers
-     |==============================*/
-
-    public function isActive(): bool
+    public function users()
     {
-        return $this->status === true;
+        return $this->hasMany(User::class);
     }
 }

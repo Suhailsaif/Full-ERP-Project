@@ -6,9 +6,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+     use HasApiTokens;
     use HasFactory, Notifiable, SoftDeletes;
 
     protected $table = 'users';
@@ -56,4 +58,25 @@ class User extends Authenticatable
     {
         return $this->is_active === true;
     }
+
+    public function roles()
+{
+    return $this->belongsToMany(Role::class, 'user_roles');
+}
+
+public function permissions()
+{
+    return $this->roles()
+        ->with('permissions')
+        ->get()
+        ->pluck('permissions')
+        ->flatten()
+        ->pluck('name')
+        ->unique();
+}
+
+public function hasPermission($permission)
+{
+    return $this->permissions()->contains($permission);
+}
 }

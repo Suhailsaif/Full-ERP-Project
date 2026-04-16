@@ -22,6 +22,11 @@ class AppServiceProvider extends ServiceProvider
         ProjectServiceInterface::class,
         ProjectService::class
     );
+
+    $this->app->bind(
+    ClientServiceInterface::class,
+    ClientService::class
+);
 }
 
     /**

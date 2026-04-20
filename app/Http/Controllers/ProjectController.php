@@ -3,41 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Services\Project\ProjectService;
 use Illuminate\Http\Request;
+use App\Services\Project\ProjectService;
+use App\Http\Resources\Project\ProjectResource;
 
 class ProjectController extends Controller
 {
-    protected $service;
+    public function __construct(
+        protected ProjectService $service
+    ) {}
 
-    public function __construct(ProjectService $service)
+    public function store(Request $request)
     {
-        $this->service = $service;
-    }
-//  public function __construct(
-//         private ProjectServiceInterface $service
-//     ) {}
+        $project = $this->service->create($request->all());
 
-    
-    public function store(ProjectRequest $request)
-    {
-        $dto = ProjectDTO::fromArray($request->validated());
-
-        return new ProjectResource(
-            $this->service->create($dto)
-        );
+        return new ProjectResource($project);
     }
+
     public function update(Request $request, Project $project)
     {
-        $project = $this->service->update($project, $request->all());
+        $project = $this->service->update($project,$request->all());
 
-        return response()->json($project);
+        return new ProjectResource($project);
     }
 
-    public function destroy(Project $project)
+    public function show(Project $project)
     {
-        $this->service->delete($project);
+        return new ProjectResource($project);
+    }
 
-        return response()->json(['message' => 'Deleted']);
+    public function index()
+    {
+        return ProjectResource::collection(
+            Project::latest()->paginate(10)
+        );
     }
 }

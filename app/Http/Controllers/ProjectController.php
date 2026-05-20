@@ -6,6 +6,8 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Services\Project\ProjectService;
 use App\Http\Resources\Project\ProjectResource;
+use App\Http\Requests\Project\StoreProjectRequest;
+use App\Http\Requests\Project\UpdateProjectRequest;
 
 class ProjectController extends Controller
 {
@@ -13,19 +15,41 @@ class ProjectController extends Controller
         protected ProjectService $service
     ) {}
 
-    public function store(Request $request)
-    {
-        $project = $this->service->create($request->all());
 
-        return new ProjectResource($project);
-    }
+    // public function store(Request $request)
+    // {
+    //     $project = $this->service->create($request->all());
 
-    public function update(Request $request, Project $project)
-    {
-        $project = $this->service->update($project,$request->all());
+    //     return new ProjectResource($project);
+    // }
 
-        return new ProjectResource($project);
-    }
+    public function store(StoreProjectRequest $request)
+{
+    $project = $this->service->create(
+        $request->validated()
+    );
+
+    return new ProjectResource($project);
+}
+
+    // public function update(Request $request, Project $project)
+    // {
+    //     $project = $this->service->update($project,$request->all());
+
+    //     return new ProjectResource($project);
+    // }
+
+    public function update(
+    UpdateProjectRequest $request,
+    Project $project
+) {
+    $project = $this->service->update(
+        $project,
+        $request->validated()
+    );
+
+    return new ProjectResource($project);
+}
 
     public function show(Project $project)
     {
@@ -33,9 +57,9 @@ class ProjectController extends Controller
     }
 
     public function index()
-    {
-        return ProjectResource::collection(
-            Project::latest()->paginate(10)
-        );
-    }
+{
+    $projects = $this->service->list();
+
+    return ProjectResource::collection($projects);
+}
 }

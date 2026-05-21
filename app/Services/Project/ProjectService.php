@@ -5,16 +5,38 @@ namespace App\Services\Project;
 use App\Models\Project;
 use App\Services\BaseService;
 use App\Services\Approval\ApprovalService;
+use App\Repositories\Contracts\ProjectRepositoryInterface;
+
 
 class ProjectService extends BaseService
 {
-    protected $approvalService;
 
-    public function __construct(ApprovalService $approvalService)
-    {
-        $this->approvalService = $approvalService;
-    }
+protected ProjectRepositoryInterface $repository;
 
+public function __construct(
+    ProjectRepositoryInterface $repository
+) {
+    $this->repository = $repository;
+}
+
+
+public function list()
+{
+    return $this->repository->paginate();
+}
+
+public function create(array $data)
+{
+    return $this->repository->create($data);
+}
+
+public function update(Project $project, array $data)
+{
+    return $this->repository->update(
+        $project->id,
+        $data
+    );
+}
     // public function create(array $data)
     // {
     //     return $this->transaction(function () use ($data) {
@@ -42,25 +64,25 @@ class ProjectService extends BaseService
 
     // }
 
-    public function create(ProjectDTO $dto)
-{
-    return $this->transaction(function () use ($dto) {
-        return Project::create([
-            ...$dto->toArray(),
-            'tenant_id' => $this->tenantId(),
-        ]);
-    });
-}
+//     public function create(ProjectDTO $dto)
+// {
+//     return $this->transaction(function () use ($dto) {
+//         return Project::create([
+//             ...$dto->toArray(),
+//             'tenant_id' => $this->tenantId(),
+//         ]);
+//     });
+// }
 
-    public function update(Project $project, array $data)
-    {
-        return $this->transaction(function () use ($project, $data) {
+    // public function update(Project $project, array $data)
+    // {
+    //     return $this->transaction(function () use ($project, $data) {
 
-            $project->update($data);
+    //         $project->update($data);
 
-            return $project;
-        });
-    }
+    //         return $project;
+    //     });
+    // }
 
     public function delete(Project $project)
     {

@@ -16,30 +16,38 @@ class ProjectController extends Controller
     ) {}
 
 
-    // public function store(Request $request)
-    // {
-    //     $project = $this->service->create($request->all());
-
-    //     return new ProjectResource($project);
-    // }
-
-    public function store(StoreProjectRequest $request)
+      public function show(Project $project)
 {
+    return $this->successResponse(
+        new ProjectResource($project),
+        'Project fetched successfully'
+    );
+}
+
+public function index()
+{
+    $projects = $this->service->list();
+
+    return $this->successResponse(
+        ProjectResource::collection($projects),
+        'Projects fetched successfully'
+    );
+}
+public function store(
+    StoreProjectRequest $request
+) {
     $project = $this->service->create(
         $request->validated()
     );
 
-    return new ProjectResource($project);
+    return $this->successResponse(
+        new ProjectResource($project),
+        'Project created successfully',
+        201
+    );
 }
 
-    // public function update(Request $request, Project $project)
-    // {
-    //     $project = $this->service->update($project,$request->all());
-
-    //     return new ProjectResource($project);
-    // }
-
-    public function update(
+public function update(
     UpdateProjectRequest $request,
     Project $project
 ) {
@@ -48,18 +56,21 @@ class ProjectController extends Controller
         $request->validated()
     );
 
-    return new ProjectResource($project);
+    return $this->successResponse(
+        new ProjectResource($project),
+        'Project updated successfully'
+    );
 }
 
-    public function show(Project $project)
-    {
-        return new ProjectResource($project);
-    }
-
-    public function index()
+public function destroy(Project $project)
 {
-    $projects = $this->service->list();
+    $project->delete();
 
-    return ProjectResource::collection($projects);
+    return $this->successResponse(
+        null,
+        'Project deleted successfully'
+    );
 }
+
+
 }

@@ -5,9 +5,18 @@ namespace App\Services\Attendance;
 use App\Models\Attendance;
 use App\Models\AttendanceLog;
 use App\Services\BaseService;
+use App\Repositories\Contracts\AttendanceRepositoryInterface;
 
 class AttendanceService extends BaseService
 {
+
+protected AttendanceRepositoryInterface $repository;
+
+public function __construct(
+    AttendanceRepositoryInterface $repository
+) {
+    $this->repository = $repository;
+}
     public function punchIn(array $data)
     {
         return $this->transaction(function () use ($data) {

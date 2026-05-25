@@ -5,9 +5,20 @@ namespace App\Services\Payroll;
 use App\Models\Payroll;
 use App\Models\PayrollItem;
 use App\Services\BaseService;
+use App\Repositories\Contracts\PayrollRepositoryInterface;
+use App\Exceptions\BusinessException;  
+
 
 class PayrollService extends BaseService
 {
+protected PayrollRepositoryInterface $repository;
+
+public function __construct(
+    PayrollRepositoryInterface $repository
+) {
+    $this->repository = $repository;
+}
+
     public function generate(array $data)
     {
         return $this->transaction(function () use ($data) {
@@ -41,5 +52,12 @@ class PayrollService extends BaseService
 
             return $payroll;
         });
+
+        if ($salary <= 0) {
+
+    throw new BusinessException(
+        'Invalid salary amount'
+    );
+}
     }
 }
